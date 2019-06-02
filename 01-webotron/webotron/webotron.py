@@ -1,41 +1,34 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-
-"""Webotron: Deploy websites with AWS.
+"""Webotron: Deploy websites with aws.
 
 Webotron automates the process of deploying static websites to AWS.
-- Configure AWS S3 list_buckets
-    - Create them
-    - Set buckets up for static website hosting
-    - Deploy local files to buckets
+- Configure AWS S3 buckets
+  - Create them
+  - Set them up for static website hosting
+  - Deploy local files to them
 - Configure DNS with AWS Route 53
-- Configure a Content Delivery Network and SSL with AWS.
+- Configure a Content Delivery Network and SSL with AWS CloudFront
 """
-
 
 import boto3
 import click
-from bucket import BucketManager
 
+from bucket import BucketManager
 
 session = None
 bucket_manager = None
 
 
 @click.group()
-@click.option(
-    '--profile',
-    default=None,
-    help="Use a given AWS profile."
-    )
-
-
+@click.option('--profile', default=None,
+              help="Use a given AWS profile.")
 def cli(profile):
     """Webotron deploys websites to AWS."""
     global session, bucket_manager
-    session_cfg = {}
 
+    session_cfg = {}
     if profile:
         session_cfg['profile_name'] = profile
 
@@ -67,6 +60,7 @@ def setup_bucket(bucket):
     bucket_manager.configure_website(s3_bucket)
 
     return
+
 
 @cli.command('sync')
 @click.argument('pathname', type=click.Path(exists=True))
